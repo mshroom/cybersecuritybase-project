@@ -37,16 +37,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         account = new Account("mickey", "mouse");
         accountRepository.save(account);
         
-        // Creating passwords
-        /*
-        PasswordDao passwordDao = new PasswordDao();
-        Password password = new Password("gmail", "mickey", "annoyingmouse");
-        password.setAccount(account);
-        passwordDao.add(password);
-        password = new Password("facebook", "mickey@gmail.com", "imsoclever");
-        password.setAccount(account);
-        passwordDao.add(password);
-*/
     }
 
     @Override

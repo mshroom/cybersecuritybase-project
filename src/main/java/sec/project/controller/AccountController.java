@@ -73,37 +73,16 @@ public class AccountController {
 
     @RequestMapping(value = "/passwords/{user}", method = RequestMethod.GET)
     public String passwords(Model model, @PathVariable String user) throws SQLException, ClassNotFoundException {
+        // For saved passwords, let's use my ultra secure password database!
         PasswordDao passwordDao = new PasswordDao();
         model.addAttribute("passwords", passwordDao.findAllByUsername(user));
         model.addAttribute("user", user);
         return "passwords";
     }
 
-    /*
-    @RequestMapping(value = "/passwords/{id}", method = RequestMethod.GET)
-    public String passwords(Model model, @PathVariable Long id) throws SQLException, ClassNotFoundException {
-        PasswordDao passwordDao = new PasswordDao();
-        Account account = accountRepository.findOne(id);
-        model.addAttribute("passwords", passwordDao.findAllByUser(account));
-        //model.addAttribute("passwords", passwordRepository.findAll());
-        model.addAttribute("user", account);
-        return "passwords";
-    }
-     */
-    /*
-    @RequestMapping(value = "/passwords/{id}", method = RequestMethod.POST)
-    public String savePassword(@PathVariable Long id, @RequestParam String service, @RequestParam String username, @RequestParam String password) throws SQLException, ClassNotFoundException {
-        PasswordDao passwordDao = new PasswordDao();
-        Password newPassword = new Password(service, username, password);
-        newPassword.setAccount(accountRepository.findOne(id));
-        passwordDao.add(newPassword);
-        //passwordRepository.save(newPassword);
-        return "redirect:/passwords/" + id;
-    }
-
-    */
     @RequestMapping(value = "/passwords/{user}", method = RequestMethod.POST)
     public String savePassword(@PathVariable String user, @RequestParam String service, @RequestParam String username, @RequestParam String password) throws SQLException, ClassNotFoundException {
+        // For saved passwords, let's use my ultra secure password database!
         PasswordDao passwordDao = new PasswordDao();
         Password newPassword = new Password(service, username, password);
         newPassword.setAccount(accountRepository.findByUsername(user));
