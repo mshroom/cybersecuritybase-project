@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @PostConstruct
     public void init() {
-        // Creating admin user with weak password
+        // Creating admin user with a nice password that is easy to remember
         Account account = new Account();
         account.setUsername("admin");
         account.setPassword("admin");

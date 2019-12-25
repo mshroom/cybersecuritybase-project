@@ -6,6 +6,9 @@
     <body>
 
         <h1>Welcome!</h1>
-
+        <div th:switch="${user.username}"> 
+            <p th:case="'admin'"><a th:href="@{/users}">List users</a></p>
+            <p th:case="*">User is not an administrator</p> 
+        </div>
     </body>
 </html>
