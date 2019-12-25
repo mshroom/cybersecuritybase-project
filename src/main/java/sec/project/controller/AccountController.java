@@ -8,13 +8,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import sec.project.domain.Account;
+import sec.project.domain.Password;
 import sec.project.repository.AccountRepository;
+import sec.project.repository.PasswordRepository;
 
 @Controller
 public class AccountController {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private PasswordRepository passwordRepository;
 
     @RequestMapping("*")
     public String defaultMapping() {
@@ -47,6 +52,37 @@ public class AccountController {
         Account account = accountRepository.findOne(id);
         model.addAttribute("user", account);
         return "home";
+    }
+
+    @RequestMapping(value = "/passwords", method = RequestMethod.GET)
+    public String passwordLogin(Model model) {
+        return "passwordlogin";
+    }
+
+    @RequestMapping(value = "/passwords", method = RequestMethod.POST)
+    public String showPasswords(@RequestParam String username, @RequestParam String password) {
+        Account account = accountRepository.findByUsername(username);
+        if (account == null || !account.getPassword().equals(password)) {
+            return "redirect:/passwords";
+        } else {
+            return "redirect:/passwords/" + account.getId();
+        }
+    }
+
+    @RequestMapping(value = "/passwords/{id}", method = RequestMethod.GET)
+    public String passwords(Model model, @PathVariable Long id) {
+        Account account = accountRepository.findOne(id);
+        model.addAttribute("passwords", passwordRepository.findAll());
+        model.addAttribute("user", account);
+        return "passwords";
+    }
+
+    @RequestMapping(value = "/passwords/{id}", method = RequestMethod.POST)
+    public String savePassword(@PathVariable Long id, @RequestParam String service, @RequestParam String username, @RequestParam String password) {
+        Password newPassword = new Password(service, username, password);
+        newPassword.setAccount(accountRepository.findOne(id));
+        passwordRepository.save(newPassword);
+        return "redirect:/passwords/" + id;
     }
 
 }

@@ -5,10 +5,10 @@
     </head>
     <body>
 
-        <h1>Welcome!</h1>
+        <h1>Welcome <span th:text="${user.username}">User</span>!</h1>
         <div th:switch="${user.username}"> 
             <p th:case="'admin'"><a th:href="@{/users}">List users</a></p>
-            <p th:case="*">User is not an administrator</p> 
+            <p th:case="*"><a th:href="@{/passwords}">Password manager</a></p> 
         </div>
     </body>
 </html>
