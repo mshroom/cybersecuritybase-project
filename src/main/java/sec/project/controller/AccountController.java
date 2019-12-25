@@ -1,5 +1,6 @@
 package sec.project.controller;
 
+import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sec.project.domain.Account;
 import sec.project.domain.Password;
 import sec.project.repository.AccountRepository;
+import sec.project.repository.PasswordDao;
 import sec.project.repository.PasswordRepository;
 
 @Controller
@@ -65,24 +67,48 @@ public class AccountController {
         if (account == null || !account.getPassword().equals(password)) {
             return "redirect:/passwords";
         } else {
-            return "redirect:/passwords/" + account.getId();
+            return "redirect:/passwords/" + account.getUsername();
         }
     }
 
-    @RequestMapping(value = "/passwords/{id}", method = RequestMethod.GET)
-    public String passwords(Model model, @PathVariable Long id) {
-        Account account = accountRepository.findOne(id);
-        model.addAttribute("passwords", passwordRepository.findAll());
-        model.addAttribute("user", account);
+    @RequestMapping(value = "/passwords/{user}", method = RequestMethod.GET)
+    public String passwords(Model model, @PathVariable String user) throws SQLException, ClassNotFoundException {
+        PasswordDao passwordDao = new PasswordDao();
+        model.addAttribute("passwords", passwordDao.findAllByUsername(user));
+        model.addAttribute("user", user);
         return "passwords";
     }
 
+    /*
+    @RequestMapping(value = "/passwords/{id}", method = RequestMethod.GET)
+    public String passwords(Model model, @PathVariable Long id) throws SQLException, ClassNotFoundException {
+        PasswordDao passwordDao = new PasswordDao();
+        Account account = accountRepository.findOne(id);
+        model.addAttribute("passwords", passwordDao.findAllByUser(account));
+        //model.addAttribute("passwords", passwordRepository.findAll());
+        model.addAttribute("user", account);
+        return "passwords";
+    }
+     */
+    /*
     @RequestMapping(value = "/passwords/{id}", method = RequestMethod.POST)
-    public String savePassword(@PathVariable Long id, @RequestParam String service, @RequestParam String username, @RequestParam String password) {
+    public String savePassword(@PathVariable Long id, @RequestParam String service, @RequestParam String username, @RequestParam String password) throws SQLException, ClassNotFoundException {
+        PasswordDao passwordDao = new PasswordDao();
         Password newPassword = new Password(service, username, password);
         newPassword.setAccount(accountRepository.findOne(id));
-        passwordRepository.save(newPassword);
+        passwordDao.add(newPassword);
+        //passwordRepository.save(newPassword);
         return "redirect:/passwords/" + id;
+    }
+
+    */
+    @RequestMapping(value = "/passwords/{user}", method = RequestMethod.POST)
+    public String savePassword(@PathVariable String user, @RequestParam String service, @RequestParam String username, @RequestParam String password) throws SQLException, ClassNotFoundException {
+        PasswordDao passwordDao = new PasswordDao();
+        Password newPassword = new Password(service, username, password);
+        newPassword.setAccount(accountRepository.findByUsername(user));
+        passwordDao.add(newPassword);
+        return "redirect:/passwords/" + user;
     }
 
 }

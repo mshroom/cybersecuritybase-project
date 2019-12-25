@@ -1,5 +1,6 @@
 package sec.project.config;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
@@ -14,19 +15,16 @@ import org.springframework.stereotype.Service;
 import sec.project.domain.Account;
 import sec.project.domain.Password;
 import sec.project.repository.AccountRepository;
-import sec.project.repository.PasswordRepository;
+import sec.project.repository.PasswordDao;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private AccountRepository accountRepository;
-    
-    @Autowired
-    private PasswordRepository messageRepository;
 
     @PostConstruct
-    public void init() {
+    public void init() throws ClassNotFoundException, SQLException {
         // Creating admin user with a nice password that is easy to remember
         Account account = new Account("admin", "admin");
         accountRepository.save(account);
@@ -40,12 +38,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         accountRepository.save(account);
         
         // Creating passwords
+        /*
+        PasswordDao passwordDao = new PasswordDao();
         Password password = new Password("gmail", "mickey", "annoyingmouse");
         password.setAccount(account);
-        messageRepository.save(password);
+        passwordDao.add(password);
         password = new Password("facebook", "mickey@gmail.com", "imsoclever");
         password.setAccount(account);
-        messageRepository.save(password);
+        passwordDao.add(password);
+*/
     }
 
     @Override
